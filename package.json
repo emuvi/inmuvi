@@ -1,0 +1,16 @@
+{
+  "name": "inmuvi",
+  "displayName": "Inmuvi",
+  "description": "Inmuvi is a Qinpel user application that features a toolbox with a series of basic functionalities on movies.",
+  "keywords": [],
+  "repository": "https://github.com/emuvi/inmuvi",
+  "author": "Éverton M. Vieira",
+  "license": "LGPL-3.0-only",
+  "version": "0.1.0",
+  "main": "./build/main.js",
+  "types": "./types/main.d.ts",
+  "dependencies": {
+    "qinpel-cps": "file:../qinpel-cps",
+    "qinpel-res": "file:../qinpel-res"
+  }
+}
