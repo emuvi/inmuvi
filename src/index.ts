@@ -8,7 +8,7 @@ import {
   QinText,
 } from "qinpel-cps";
 
-class QinScaffold extends QinStack {
+class Inmuvi extends QinStack {
   private _qinInput = new QinFilePath();
   private _qinOutput = new QinFilePath();
   private _qinMake = new QinButton({ label: new QinLabel("Make") });
@@ -49,4 +49,4 @@ class QinScaffold extends QinStack {
   }
 }
 
-new QinScaffold().style.putAsBody();
+new Inmuvi().style.putAsBody();
