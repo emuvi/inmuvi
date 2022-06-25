@@ -111,19 +111,38 @@ class Inmuvi extends QinStack {
             }
           }
         }
-        process.detectedFreezes = freezes;
-        this.step3StripFreezes(process);
+        if (freezes.length == 0) {
+          this._qinText.appendLine("There is no freezes to be stripped.");
+        } else {
+          process.detectedFreezes = freezes;
+          this.step3AdjustTimes(process);
+        }
       })
       .catch((err) => {
         this._qinText.appendLine("Error on Show: " + err.message);
       });
   }
 
-  private step3StripFreezes(process: Process) {
-    if (!(process?.detectedFreezes?.length > 0)) {
-      this._qinText.appendLine("There is no freezes to be stripped.");
-      return;
+  private step3AdjustTimes(process: Process) {
+    if (process.detectedFreezes[0].freezeStart < 1) {
+      process.detectedFreezes[0].freezeStart = 1;
     }
+    for (let i = 1; i < process.detectedFreezes.length; i++) {
+      let previous = process.detectedFreezes[i - 1];
+      let actual = process.detectedFreezes[i];
+      let diff = previous.freezeEnd - actual.freezeStart;
+      if (diff < 1) {
+        previous.freezeEnd -= 0.5;
+        actual.freezeStart += 0.5;
+      }
+    }
+    process.detectedFreezes = process.detectedFreezes.filter(
+      (freeze) => freeze.freezeEnd - freeze.freezeStart > 1
+    );
+    this.step4StripFreezes(process);
+  }
+
+  private step4StripFreezes(process: Process) {
     let filterParts = new Array<string>();
     for (let i = 0; i < process.detectedFreezes.length; i++) {
       const actual = process.detectedFreezes[i];
@@ -175,14 +194,14 @@ class Inmuvi extends QinStack {
       })
       .then((token) => {
         process.issuedStripping = token;
-        this.step4FinalShow(process);
+        this.step5FinalShow(process);
       })
       .catch((err) => {
         this._qinText.appendLine(err);
       });
   }
 
-  private step4FinalShow(process: Process) {
+  private step5FinalShow(process: Process) {
     this.qinpel.talk.issued
       .askWhenDone({
         token: process.issuedStripping,
